@@ -7,8 +7,23 @@ async function sendDataGetDetails(courierShip, trackingNumber) {
             courier: courierShip,
             tracking: trackingNumber
         }
-    var respuesta = await axios.post(url, shipment)
-    console.log(respuesta.data.data[0]);
+    var tk = localStorage.getItem('token')
+    if (!tk && tk == '') {
+        localStorage.clear()
+        window.location.replace('/login')
+    }
+    
+    var config = {
+        headers:{
+        weship: tk
+        }
+    }
+    var respuesta = await axios.post(url, shipment,config)
+    console.log(respuesta.data);
+    if (respuesta.data.status === 401) {
+        localStorage.clear()
+        window.location.replace('/login')
+      }
     return respuesta.data.data[0]
 }
 function formatDate(dateString) {
