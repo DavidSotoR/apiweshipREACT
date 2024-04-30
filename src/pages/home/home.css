@@ -1,0 +1,12 @@
+@media (min-height: 921px) {
+    .container-shiments-list {
+        height: 55vh!important; 
+        overflow: auto!important;
+    }
+}
+@media (max-height: 920px) {
+    .container-shiments-list {
+        height: 50vh!important; 
+        overflow: auto!important;
+    }
+}

@@ -66,7 +66,7 @@ const Details = () => {
                 <ul>
                 {shipmentDetail.events && shipmentDetail.events.length > 0 ? (
                     shipmentDetail.events.map((event, index) => (
-                        <li key={index}>
+                        <li key={"detail"+index}>
                             <p>Status: {event.status}</p>
                             <p>Date: {formatDate(event.date)}</p>
                             <p>Location: {event.scanLocation ?? event.message}</p>
