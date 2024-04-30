@@ -32,7 +32,7 @@ export default function Header() {
     return (
         <nav className="navbar navbar-expand-sm bg-primary border-bottom border-body sticky-top">
             <div className="container-fluid">
-                <a className="navbar-brand text-white" href="/">PRUEBA</a>
+                <a className="navbar-brand text-white" href={isLoggedValue ? "/" : null}>PRUEBA</a>
                 { isLoggedValue && 
                 <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon text-white"></span>
