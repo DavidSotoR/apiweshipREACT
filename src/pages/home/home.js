@@ -2,6 +2,7 @@ import axios from 'axios';
 import { format } from 'date-fns';
 import React, { useEffect, useState } from 'react';
 import './home.css'
+import { Alert } from 'bootstrap';
 
 var actualPage = 1;
 var maxPages = 0;
@@ -128,15 +129,29 @@ const Home = () => {
   }
 
   const searchByQuery = (offset = 0, search = 'search') =>{
+    
+    var di = inputValues.inputDateInit ?? ''
+    var de = inputValues.inputDateEnd ?? ''
+    var stats = inputValues.inputStatus ?? ''
+
+    if (di && de) {
+        var dateInit = new Date(di);
+        var dateEnd = new Date(de);
+        if (dateEnd < dateInit) {
+            alert('La Fecha de fin debe ser posterior a la fecha de inicio.');
+            return 0
+        }
+        
+    }
+
     if (search === 'search') {
       actualPage = 1;
       var offset = 0
     }
     setShipmentData({ count: 0, rows: [] })
-    var di = inputValues.inputDateInit ?? ''
-    var de = inputValues.inputDateEnd ?? ''
-    var stats = inputValues.inputStatus ?? ''
+
     var where = ''
+
     if (de !== '') {
       var dateEnd = new Date(de);
       dateEnd.setHours(23, 59, 59, 999);
@@ -145,7 +160,8 @@ const Home = () => {
     if (di == '' && de == '' && stats == '') {
       where = ''
     } else {
-      where = `where={${di === "" && de === "" ? "" : `"fulfillmentDate": { ${di !== '' ? `"[gte]": "${di}",` : ""} ${de !== '' ? `"[lte]": "${de}"`: ""}},`} "status": "${stats !== '' ? stats : ''}","markedAs": "OPEN"}&` 
+      var statsObj = stats === '' ? '' : `"status": "${stats}",` 
+      where = `where={${di === "" && de === "" ? "" : `"fulfillmentDate": { ${di !== '' ? `"[gte]": "${di}",` : ""} ${de !== '' ? `"[lte]": "${de}"`: ""}},`} ${statsObj} "markedAs": "OPEN"}&` 
     }
     var newQuery = `${where}limit=10&offset=${offset}&sortBy=fulfillmentDate&sortDir=ASC`
     console.log(newQuery);
@@ -220,7 +236,7 @@ const Home = () => {
               </select>
             </div>
           </div>
-          <div className='col-12 d-flex justify-content-start align-items-center pt-3'>
+          <div className='col-12 d-flex justify-content-center align-items-center pt-3'>
             <button className='btn btn-primary' onClick={searchByQuery}>BUSCAR</button>
           </div>
         </div>

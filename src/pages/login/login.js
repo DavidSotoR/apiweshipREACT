@@ -1,26 +1,26 @@
 import axios from 'axios';
-import React, { useRef } from 'react';
-import { Route } from 'react-router-dom';
-import Home from '../home/home';
+import React, { useState } from 'react';
 
 
-// Definición del componente Funcional
 const Login = () => {
-  const inputEmail = useRef(null)
-  const inputPass = useRef(null)
+  const [email, setEmail] = useState('demorh@weship.com');
+  const [password, setPassword] = useState('D3m0Rh.!');
 
   const sendLogin = ()=>{
-    console.log('EJECUTANTO LOGIN');
     var dataPost = {
-      email: inputEmail.current.value,
-      password: inputPass.current.value
+      email: email,
+      password: password
     }
-    console.log(dataPost);
     axios.post('http://localhost:4000/api/login',dataPost).then(resp =>{
       var objToken = resp.data
-      localStorage.setItem('login', true)
-      localStorage.setItem('token', objToken.token)
       console.log(objToken);
+      if (!objToken.success || objToken.success === 'invalid_credentials') {
+        alert(objToken.token)
+        localStorage.clear()
+        return 0
+      }
+      localStorage.setItem('login', objToken.success)
+      localStorage.setItem('token', objToken.token)
       window.location.replace('/')
     }).catch(error =>{
       alert('Ocurrio un Problema')
@@ -32,11 +32,11 @@ const Login = () => {
         <h1 className='text-center'>LOGIN</h1>
         <div className="mb-3">
           <label htmlFor="inputEmail" className="form-label">Usuario</label>
-          <input type="email" className="form-control" value={"demorh@weship.com"} id="inputEmail" placeholder="Correo"  ref={inputEmail}/>
+          <input type="email" className="form-control" value={email} id="inputEmail" placeholder="Correo"  onChange={(e)=> setEmail(e.target.value)}/>
         </div>
         <div className="mb-3">
           <label htmlFor="inputPassword" className="form-label">Contraseña</label>
-          <input type="password" className="form-control" value={"D3m0Rh.!"} id="inputPassword" placeholder="Contraseña" ref={inputPass}/>
+          <input type="password" className="form-control" value={password} id="inputPassword" placeholder="Contraseña" onChanges={(e)=> setPassword(e.target.value)}/>
         </div>
         <div className="mb-3 d-flex justify-content-center">
           <button onClick={ sendLogin } className='btn btn-primary'>Iniciar Sesión</button>

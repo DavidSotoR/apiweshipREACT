@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 const NavLinkItem = ({ to, children }) => (
     <li className="nav-item">
-      <Link to={to} className="nav-link text-white" aria-label="Close">{children}</Link>
+      <Link to={to} className="nav-link text-white" data-bs-dismiss="offcanvas" aria-label="Close">{children}</Link>
     </li>
   );
 
@@ -25,10 +25,14 @@ export default function Header() {
         localStorage.clear()
         window.location.replace('login')
     }
+
+    var redirectTo = ()=>{
+        window.location.replace('/')
+    }
     return (
         <nav className="navbar navbar-expand-sm bg-primary border-bottom border-body sticky-top">
             <div className="container-fluid">
-                <a className="navbar-brand text-white">PRUEBA</a>
+                <a className="navbar-brand text-white" href="/">PRUEBA</a>
                 { isLoggedValue && 
                 <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon text-white"></span>
@@ -42,7 +46,9 @@ export default function Header() {
                     </div>
                     <div class="offcanvas-body">
                         <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                        { isLoggedValue && <NavLinkItem to={PathConstants.HOME} children={'HOME'}></NavLinkItem>}
+                        { isLoggedValue && <li className="nav-item">
+                                <a className="nav-link text-white" aria-current="page" onClick={redirectTo} data-bs-dismiss="offcanvas" aria-label="Close">HOME</a>
+                            </li>}
                         { isLoggedValue && <li className="nav-item">
                                 <a className="nav-link text-white" aria-current="page" onClick={logout} data-bs-dismiss="offcanvas" aria-label="Close">LOGOUT</a>
                             </li>}
