@@ -8,7 +8,7 @@ async function sendDataGetDetails(courierShip, trackingNumber) {
             tracking: trackingNumber
         }
     var tk = localStorage.getItem('token')
-    if (!tk && tk == '') {
+    if (!tk && tk === '') {
         localStorage.clear()
         window.location.replace('/login')
     }
@@ -37,12 +37,34 @@ function formatDate(dateString) {
     return `${day}-${month}-${year} ${hours}:${minutes}`;
 }
 const Details = () => {
+    const goBack = () => {
+        window.location.replace('/')
+    }
     const [shipmentDetail, setShipmentDetail] = useState({});
+    const [ rowTableDetails, setRowTableDetails ] = useState([])
+    const renderFilasTabla = () => {
+        return rowTableDetails.map((detail, index) => (
+            <tr key={'tr-'+index}>
+                <td>
+                    <p style={{ fontWeight: "bold" }}>{detail.status}</p>
+                </td>
+                <td>
+                    <p>{formatDate(detail.date)}</p>
+                            
+                </td>
+                <td>
+                    <p>{detail.scanLocation ?? detail.message}</p>
+                </td>
+            </tr>
+        ));
+    };
+
     useEffect(() => {
         const searchParams = new URLSearchParams(window.location.search);
         const courier = searchParams.get('courier');
         const tracking = searchParams.get('tracking');
         sendDataGetDetails(courier,tracking).then(data=>{
+            setRowTableDetails(data.events)
             setShipmentDetail(data);
         }).catch(error => {
             console.error('Error al obtener detalles del envío:', error);
@@ -50,7 +72,13 @@ const Details = () => {
     }, []);
   return (
     <div className='card m-3'>
+        <div className='m-3'>
+            <button className="btn btn-outline-primary" onClick={ goBack }>
+                <img src={`${process.env.PUBLIC_URL}/icon_arrow_back.svg`} alt="Icono" /> Back
+            </button>
+        </div>
         <div className='card-body'>
+            <h4>Shipment Data</h4>
             <p>ID: { JSON.stringify(shipmentDetail.id) }</p>
             <p>Channel: { JSON.stringify(shipmentDetail.channel) } - courier: { JSON.stringify(shipmentDetail.courier) }</p>
             <p>Selected Shipping: {shipmentDetail.customerSelectedShipping}</p>
@@ -63,19 +91,18 @@ const Details = () => {
             </div>
             <div className='d-grid justify-element-start'>
                 <h5>History Shippment:</h5>
-                <ul>
-                {shipmentDetail.events && shipmentDetail.events.length > 0 ? (
-                    shipmentDetail.events.map((event, index) => (
-                        <li key={"detail"+index}>
-                            <p>Status: {event.status}</p>
-                            <p>Date: {formatDate(event.date)}</p>
-                            <p>Location: {event.scanLocation ?? event.message}</p>
-                        </li>
-                    ))
-                ) : (
-                    <li>No hay eventos disponibles</li>
-                )}
-                </ul>
+                <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Status</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    { renderFilasTabla() }
+                </tbody>
+                </table>
             </div>
         </div>
     </div>
