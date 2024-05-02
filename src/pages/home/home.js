@@ -108,24 +108,79 @@ const Home = () => {
   }
   
   const createListPages = (total) => {
+    const displayPages = 5;
     const items = [];
+    console.log(actualPage);
     maxPages = Math.ceil(total / 10)
     for (let i = 1; i <= maxPages; i++) {
-      items.push(
-        <li key={'p'+i} className="page-item">
-          <span className="page-link" onClick={() => { searchByQuery(goToPage(i,'pag'),'pg') }}>{i}</span>
-        </li>
-      );
-      if (i === 5) {
+      if (i === actualPage) {
+        items.push(
+          <li key={'p'+i} className="page-item active">
+            <span className="page-link" onClick={() => { searchByQuery(goToPage(i,'pag'),'pg') }}>{i}</span>
+          </li>
+        );
+      } else {
+        items.push(
+          <li key={'p'+i} className="page-item">
+            <span className="page-link" onClick={() => { searchByQuery(goToPage(i,'pag'),'pg') }}>{i}</span>
+          </li>
+        );
+      }
+      
+      if (i === displayPages) {
         items.push(
           <li key={'p'+(i+1)} className="page-item">
-            <span className="page-link">...</span>
+            <span className="page-link" onClick={ createNextListPage }>...</span>
           </li>
         );
         break;
       }
     } 
     return items;
+  }
+
+  const createNextListPage = () => {
+    console.log('...');
+    var nLimitPage = (actualPage+5)+5;
+    var pLimitPage = actualPage-1
+    var initPage = actualPage+5
+    var items = []
+
+    var limitPages =Math.ceil(totalRows / 10)
+    
+    console.log("initPage" + initPage);
+    console.log("Actual:"+actualPage);
+    console.log("limitPage:" + nLimitPage);
+
+    actualPage = initPage
+
+    for (let i = initPage; i <= nLimitPage; i++) {
+      if (i === initPage) {
+        items.push(
+          <li key={'p'+i} className="page-item active">
+            <span className="page-link" onClick={() => { searchByQuery(goToPage(i,'pag'),'pg') }}>{i}</span>
+          </li>
+        );
+      } else {
+        items.push(
+          <li key={'p'+i} className="page-item">
+            <span className="page-link" onClick={() => { searchByQuery(goToPage(i,'pag'),'pg') }}>{i}</span>
+          </li>
+        );
+      }
+      
+      if (i === nLimitPage) {
+        items.push(
+          <li key={'p'+(i+1)} className="page-item">
+            <span className="page-link" onClick={ createNextListPage }>...</span>
+          </li>
+        );
+        break;
+      }
+    } 
+
+    setPagination(items)
+
   }
 
   const searchByQuery = (offset = 0, search = 'search') =>{
@@ -258,7 +313,7 @@ const Home = () => {
             <div className='card mt-2 mb-3'>
               <div className='card-body'>
                 <h5 className='card-title'>Order: {shipment.orderNumber}</h5>
-                <p><span style={{ fontWeight:"bold" }}>Estatus: </span> {shipment.status  }</p>
+                <p><span style={{ fontWeight:"bold" }}>Status: </span> {shipment.status  }</p>
                 <div className='container'>
                   <div className='row'>
                     <div className='col ps-0'>
